@@ -61,4 +61,4 @@ Note: very early beta version, and this version particularly *depends on your sy
 So far, only tested on Ubuntu 22.04. Let me know of any problems on other systems.
 There's been confirmation that the incuded binaries work on Windows 11 with WSL subsystem (Ubuntu). The bin/pdp.sh has not been tested on Windows yet though. Feedback requested!
 <br>
-The install script assumes /usr/local/bin is an existing directory, in your PATH. Otherwise, the command 'pdp' will not be found; in that case try '/opt/rpdp/bin/pdp ?' to see if that works.
+The install script assumes /usr/local/bin is an existing directory, in your PATH. Otherwise, the command 'pdp' will not be found; in that case try '/opt/rpdp/bin/rpdp.sh ?' to see if that works.
