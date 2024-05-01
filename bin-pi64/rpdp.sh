@@ -1,1 +1,0 @@
-../bin-intel/rpdp.sh
