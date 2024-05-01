@@ -1,0 +1,5 @@
+attach -u tty 12345,connect=pidp10.local:10003;notelnet
+set rom type=stty
+load -s ./ssv22.iml
+reset
+go

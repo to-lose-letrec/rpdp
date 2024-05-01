@@ -36,7 +36,7 @@ echo will leave those things unchanged. So it will *not* undo anything
 echo that is already installed.
 echo 
 echo
-echo For Linux, ibut will work under Windows 11 with WSL installed too
+echo For Linux, but will work under Windows 11 with WSL installed too
 echo
 
 read -p "Set required access privileges to rpdp directory? " yn
@@ -79,7 +79,7 @@ case $yn in
             rm -rf "/opt/rpdp/bin"
         fi
         mkdir /opt/rpdp/bin
-        cp /opt/rpdp/bin-$archi/* /opt/rpdp/bin
+        cp /opt/rpdp/store-$archi/* /opt/rpdp/bin
         echo "...Done."
         ;;
     [Nn]* ) ;;
