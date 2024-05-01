@@ -15,7 +15,7 @@ if [ ! -d "/opt/rpdp" ]; then
     exit 1
 fi
 
-echo
+echo 
 echo
 echo PiDP-10 rpdp install script
 echo ===========================

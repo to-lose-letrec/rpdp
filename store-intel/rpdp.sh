@@ -5,7 +5,7 @@
 pidpremote="pidp10c.local"
 # EDIT THE LINE BELOW TO MATCH THE NAME OF YOUR PIDP-10, (adding .local)
 piuser="pi"
-# ----------------------------------------------------------------------
+# ---------------------------------------------------------------------- 
 
 
 echo "remote connection to $pidpremote"
