@@ -3,7 +3,7 @@
 # RPDP: Remote terminal simulators for the PiDP-10
 
 Terminal simulators for remote access to a PiDP-10.  
-Convert a laptop, desktop or second Raspberry Pi into a Knight TV or DEC VT-52 terminal on your PiDP-10.  
+Convert a laptop, desktop or second Raspberry Pi into a Knight TV or DEC VT-52 terminal for your PiDP-10.  
 <br>
 Supports:
 - Linux X86_64 (Ubuntu)
