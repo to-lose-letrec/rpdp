@@ -79,6 +79,9 @@ case $yn in
         fi
         mkdir /opt/rpdp/bin
         cp /opt/rpdp/store-$archi/* /opt/rpdp/bin
+        echo "Copying dependency sound files."
+        mkdir /opt/pidp10/bin
+        cp -r /opt/rpdp/install/dependencies/sounds /opt/pidp10/bin
         echo "...Done."
         ;;
     [Nn]* ) ;;
@@ -111,12 +114,15 @@ case $yn in
         # update first...
         sudo apt-get update
         # for simh:
-	sudo apt install -y libpcre3
+	    sudo apt install -y libpcre3
         sudo apt install -y libsdl2-image-dev
         sudo apt install -y libsdl2-net-dev
-	sudo apt install -y libvdeplug2
-	sudo apt install -y libpcap-dev
-	#Most systems do not come with telnet installed, so --
+	    sudo apt install -y libvdeplug2
+	    sudo apt install -y libpcap-dev
+        sudo apt install -y lxterminal
+	    sudo apt install -y libsdl2-mixer-2.0-0
+        sudo apt install -y libxft2
+	    #Most systems do not come with telnet installed, so --
         sudo apt-get install -y telnet
         #sudo apt-get install -y telnetd
 	# for pdpcontrol: 
@@ -144,22 +150,25 @@ case $yn in
         while true; do
             echo
             echo ----------------------------------------------------
-            read -p "Hostname of the PiDP-10 ?  " hostnm
-            read -p "User name on the PiDP-10 ? " usernm
+            read -p "Hostname of the PiDP-10? " hostnm
+            read -p "User name on the PiDP-10? " usernm
             echo "OK. Host name is $hostnm and user name is $usernm"
             echo ----------------------------------------------------
-            read -p "Correct? (y/n) ? " ynnm
+            read -p "Correct? (y/n) " ynnm
             if [[ "$ynnm" == "Y" || "$ynnm" == "y" ]]; then
-                sed -i "s/^pidpremote=.*/pidpremote=\"$hostnm.local\"/" "/opt/rpdp/bin/rpdp.sh"
+                if [[ "$hostnm" != *"."* ]]; then
+                    hostnm="$hostnm.local"
+                fi
+                sed -i "s/^pidpremote=.*/pidpremote=\"$hostnm\"/" "/opt/rpdp/bin/rpdp.sh"
                 sed -i "s/^piuser=.*/piuser=\"$usernm\"/" "/opt/rpdp/bin/rpdp.sh"
-                sed -i "s/attach -u tty 12345,connect=.*.local:10003;notelnet/attach -u tty 12345,connect=$hostnm.local:10003;notelnet/" /opt/rpdp/bin/imlac.simh
-                break;
+                sed -i "s/attach -u tty 12345,connect=.*.local:10003;notelnet/attach -u tty 12345,connect=$hostnm:10003;notelnet/" /opt/rpdp/bin/imlac.simh
+                break
             fi
         done
         echo "...Done."
         ;;
     [Nn]* ) ;;
-        * ) echo "Please answer yes or no.";;
+    * ) echo "Please answer yes or no." ;;
 esac
 echo "...Done."
 
