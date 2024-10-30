@@ -80,8 +80,8 @@ case $yn in
         mkdir /opt/rpdp/bin
         cp /opt/rpdp/store-$archi/* /opt/rpdp/bin
         echo "Copying dependency sound files."
-        mkdir /opt/pidp10/bin
-        cp -r /opt/rpdp/install/dependencies/sounds /opt/pidp10/bin
+        sudo mkdir -p /opt/pidp10/bin
+        sudo cp -r /opt/rpdp/install/dependencies/sounds /opt/pidp10/bin
         echo "...Done."
         ;;
     [Nn]* ) ;;
@@ -149,7 +149,10 @@ case $yn in
     [Yy]* ) 
         while true; do
             echo
-            echo ----------------------------------------------------
+	    echo ----------------------------------------------------
+            echo Do not forget to add .local to the hostname if you
+	    echo connect to a PiDP-10 that is on the same network.
+	    echo ----------------------------------------------------
             read -p "Hostname of the PiDP-10? " hostnm
             read -p "User name on the PiDP-10? " usernm
             echo "OK. Host name is $hostnm and user name is $usernm"
