@@ -70,6 +70,7 @@
 
                     # And now to do some dodgy things to config.mk.
                     sed -i 's/-lrt//' $SRC/config.mk
+                    sed -i 's/,--allow-shlib-undefined//' $SRC/config.mk
                     sed -i -e 's/PKG_CONFIG = pkg-config//; /# Customize below to fit your system/a\' \
                     -e 'PKG_CONFIG = pkg-config \
                     CFLAGS := $(CFLAGS) `$(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf` \
@@ -144,7 +145,7 @@ if [ $# -eq 0 ]; then
     ssh -t ${piuser}@${pidpremote} 'pdp'
 else
     case $1 in
-	      con)
+        con)
             nohup sty -e telnet ${pidpremote} 1025 > /dev/null 2>&1 &
             ;;
         telcon)
@@ -155,19 +156,19 @@ else
             ;;
         tvcon)
             nohup tvcon -2BS ${pidpremote} > /dev/null 2>&1 &
-  			    ;;
-  		  tek)
-            nohup tek4010 -b9600 telnet ${pidpremote} 10017 > /dev/null 2>&1 &
-  			    ;;
-  		  dp3300)
-  			    nohup dp3300 -a -B telnet ${pidpremote} 10020 > /dev/null 2>&1 &	
-  			    ;;
-  		  *)
-  			    echo rpdp for remote PiDP-10. Options are: 
-   			    echo  [con telcon vt52 tvcon tek dp3300 ]
-  			    echo when run without options, 
-  			    echo  pdp brings you into simh - Ctrl-A d to leave.
-  			    echo
+            ;;
+        tek)
+            nohup tek4010 -b9600 telnet ${pidpremote} 10017 > /dev/null 2>&1
+            ;;
+        dp3300)
+            nohup dp3300 -a -B telnet ${pidpremote} 10020 > /dev/null 2>&1 &
+            ;;
+        *)
+            echo rpdp for remote PiDP-10. Options are:
+            echo  [con telcon vt52 tvcon tek dp3300 ]
+            echo when run without options,
+            echo  pdp brings you into simh - Ctrl-A d to leave.
+            echo
             echo edit flake.nix to change hostname and username 
             echo for your PiDP-10.
             ;;

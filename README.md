@@ -78,6 +78,6 @@ Notably, the Imlac emulator is absent. The primary author of flake.nix (to-lose-
 <br><br>
 Rather than using `lxterminal` for `telcon`, `xterm` is used. The latter is more likely to be installed by default on some systems, and is sure to be installed on Mac OS X if `XQuartz` is used (this is also the recommended configuration there).
 <br><br>
-Also, the sty33 program compiles and runs as expected, but the font is up to you to install. The author recommends using `home-manager` for managing individual user configurations, but simply copying it to `$HOME/.local/share/fonts` or `$HOME/.fonts` and running `fc-cache -v -f` is all that is strictly necessary.
+Also, the `sty33` program compiles and runs as expected, but the font is up to you to install. The author recommends using `home-manager` for managing individual user configurations, but simply copying it to `$HOME/.local/share/fonts` or `$HOME/.fonts` and running `fc-cache -v -f` is all that is strictly necessary.
 <br><br>
 `supdup` is also included in this version.
