@@ -7,9 +7,11 @@ Convert a laptop, desktop or second Raspberry Pi into a Knight TV or DEC VT-52 t
 <br>
 Supports:
 - Linux X86_64 (Ubuntu)
+- NixOS (with flake.nix)
+- Mac OS X (with flake.nix)
 - Windows 11 with WSL subsystem (Ubuntu)
 - Raspberry Pi (Bookworm 64 bit)
-<br>
+<br><br>
 Included terminal simulators:
 - Knight TV
 - DEC VT-52
@@ -55,10 +57,27 @@ Don't forget, if you want to switch Teletypes in mid-flight, leave the first Tel
   
 # Warning...
 
-Note: very early beta version, and this version particularly *depends on your system using the apt package manager* (Ubuntu, Debian). 
-<br>Edit install-rpdp.sh to use any other package manager.
-<br>
+Note: very early beta version. This version is usable on Debian-based GNU/Linux distributions (using apt), or a system running Nix with Flakes enabled. The flake.nix has been tested on NixOS 24.11 and an M3 MacBook Pro running macOS 15 Sequoia, though there is no reason to suppose that a Windows system with WSL2 could not also work.
+
+## Install scripts
+Edit install-rpdp.sh to use any other package manager.
+<br><br>
 So far, only tested on Ubuntu 22.04. Let me know of any problems on other systems.
-There's been confirmation that the incuded binaries work on Windows 11 with WSL subsystem (Ubuntu). The bin/pdp.sh has not been tested on Windows yet though. Feedback requested!
-<br>
+There's been confirmation that the included binaries work on Windows 11 with WSL subsystem (Ubuntu). The bin/pdp.sh has not been tested on Windows yet though. Feedback requested!
+<br><br>
 The install script assumes /usr/local/bin is an existing directory, in your PATH. Otherwise, the command 'pdp' will not be found; in that case try '/opt/rpdp/bin/rpdp.sh ?' to see if that works.
+
+## flake.nix
+The "easy button" is to simply run `nix shell` in the root of the repo after setting `pidpremote` and `piuser` in 
+flake.nix. However, you can also use `nix profile install`. From there, all the commands work exactly as described above in the Terminals section.
+<br><br>
+The flake.nix file is designed for maximum flexibility, and individual build targets can be built and tested.
+
+### Differences from the apt version
+Notably, the Imlac emulator is absent. The primary author of flake.nix (to-lose-letrec) is having trouble getting it to compile properly. Help is welcome if you know your way around Nix!
+<br><br>
+Rather than using `lxterminal` for `telcon`, `xterm` is used. The latter is more likely to be installed by default on some systems, and is sure to be installed on Mac OS X if `XQuartz` is used (this is also the recommended configuration there).
+<br><br>
+Also, the sty33 program compiles and runs as expected, but the font is up to you to install. The author recommends using `home-manager` for managing individual user configurations, but simply copying it to `$HOME/.local/share/fonts` or `$HOME/.fonts` and running `fc-cache -v -f` is all that is strictly necessary.
+<br><br>
+`supdup` is also included in this version.
