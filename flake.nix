@@ -12,7 +12,7 @@
       nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
 
       # Change the below values for your own setup!
-      pidpremote = "XXX.XXX.XXX.XXX"; 
+      pidpremote = "XXX.XXX.XXX.XXX";
       piuser = "pi";
     in
       {
@@ -35,6 +35,59 @@
                   nativeBuildInputs = [ gnumake SDL2 ];
                   buildPhase = stdBuild;
                   installPhase = stdInstall;
+                };
+
+                imlac = stdenv.mkDerivation rec {
+                  pname = "imlac";
+                  version = "1.0";
+                  src = fetchFromGitHub {
+                    owner = "open-simh";
+                    repo = "simh";
+                    rev = "master";
+                    hash = "sha256-e0S/qz38WDCY3sCAsOXsQfyQ/IwRZwM0G7uRdV64QxY=";
+                  };
+                  doCheck = true;
+                  nativeBuildInputs = [
+                    SDL2
+                    SDL2_image
+                    SDL2_mixer
+                    SDL2_net
+                    SDL2_ttf
+                    iconv
+                    libpcap
+                    libpng
+                    pcre
+                    pkg-config
+                    which
+                    xorg.libX11
+                    xorg.libXft
+                    zlib
+                  ];
+                  LIBRARIES = "/lib:${SDL2}/lib:${SDL2_ttf}/lib:${libpng}/lib:${SDL_net}/lib:${SDL_image}/lib:${SDL_mixer}/lib:${libpcap}/lib:${pcre}/lib:${xorg.libX11}/lib:${xorg.libXft}/lib";
+                  NIX_LDFLAGS = "-lm -lz";
+                  buildPhase = ''
+                    substituteInPlace makefile --replace-quiet '/sbin/ldconfig' 'ldconfig'
+                    substituteInPlace makefile --replace-quiet 'grep -A 10' 'grep -A 100'
+                    make imlac
+                  '';
+                  imlacSimh = writeText "imlac.simh" ''
+                    attach -u tty 12345,connect=${pidpremote}:10003;notelnet
+                    set rom type=stty
+                    load -s TARGET
+                    reset
+                    go
+                  '';
+                  installPhase = ''
+                    mkdir -p $out/bin
+
+                    # There has GOT to be a better way to do this, but the issue
+                    # is if TARGET is set in the variable above, it will point to
+                    # the wrong place after the symlinkJoin.
+                    cat ${imlacSimh} | sed "s,TARGET,$out/ssv22.iml," > $out/imlac.simh
+                    cp imlac/tests/ssv22.iml $out/ssv22.iml
+
+                    cp BIN/imlac $out/bin
+                  '';
                 };
 
                 sty = stdenv.mkDerivation {
@@ -70,7 +123,12 @@
 
                     # And now to do some dodgy things to config.mk.
                     sed -i 's/-lrt//' $SRC/config.mk
-                    sed -i 's/,--allow-shlib-undefined//' $SRC/config.mk
+
+                    # This seems to only affect the Mac environment.
+                    if [ ${system} == "aarch64-darwin" ]; then
+                      sed -i 's/,--allow-shlib-undefined//' $SRC/config.mk
+                    fi
+
                     sed -i -e 's/PKG_CONFIG = pkg-config//; /# Customize below to fit your system/a\' \
                     -e 'PKG_CONFIG = pkg-config \
                     CFLAGS := $(CFLAGS) `$(PKG_CONFIG) --cflags sdl2 SDL2_image SDL2_mixer SDL2_ttf` \
@@ -109,7 +167,7 @@
                   nativeBuildInputs = [ cairo gnumake gtk3 pkg-config ];
                   buildPhase = stdBuild;
                   installPhase = stdInstall;
-                };              
+                };
 
                 tvcon = stdenv.mkDerivation {
                   pname = "tvcon";
@@ -157,6 +215,10 @@ else
         tvcon)
             nohup tvcon -2BS ${pidpremote} > /dev/null 2>&1 &
             ;;
+        imlac)
+            echo "ITS tip: don't forget to enter :tctyp oimlac after logging in"
+            nohup imlac ${self.packages.${system}.imlac}/imlac.simh > /dev/null 2>&1 &
+            ;;
         tek)
             nohup tek4010 -b9600 telnet ${pidpremote} 10017 > /dev/null 2>&1
             ;;
@@ -165,32 +227,33 @@ else
             ;;
         *)
             echo rpdp for remote PiDP-10. Options are:
-            echo  [con telcon vt52 tvcon tek dp3300 ]
+            echo  [con telcon vt52 tvcon tek dp3300 imlac]
             echo when run without options,
             echo  pdp brings you into simh - Ctrl-A d to leave.
             echo
-            echo edit flake.nix to change hostname and username 
+            echo edit flake.nix to change hostname and username
             echo for your PiDP-10.
             ;;
     esac
 fi
-                '';              
+                '';
 
                 nix-rpdp = symlinkJoin {
                   name = "nix-rpdp";
                   paths = [
                     inetutils
-                  
+
                     self.packages.${system}.dp3300
+                    self.packages.${system}.imlac
                     self.packages.${system}.rpdp
-                    self.packages.${system}.sty                  
-                    self.packages.${system}.supdup                  
-                    self.packages.${system}.tek4010                  
+                    self.packages.${system}.sty
+                    self.packages.${system}.supdup
+                    self.packages.${system}.tek4010
                     self.packages.${system}.tvcon
                     self.packages.${system}.vt52
                   ];
                 };
-              
+
                 default = self.packages.${system}.nix-rpdp;
               }));
       };
