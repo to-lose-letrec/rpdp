@@ -103,14 +103,14 @@
                     xorg.libXft
                   ];
                   nativeBuildInputs = [
-                    fontconfig
-                    freetype
-                    gnumake
-                    pkg-config
                     SDL2
                     SDL2_image
                     SDL2_mixer
                     SDL2_ttf
+                    fontconfig
+                    freetype
+                    gnumake
+                    pkg-config
                   ];
                   patchPhase = ''
                     # For our first order of business, the sounds
